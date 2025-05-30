@@ -34,7 +34,12 @@ export default function PdfDesigner() {
 
   useEffect(() => {
     async function loadTemplate() {
-      const savedTemplate = localStorage.getItem("template");
+      //   const savedTemplate = localStorage.getItem("template");
+      const savedTemplate = await fetch("/myData.json").then((res) =>
+        res.json()
+      );
+      console.log("saved template", savedTemplate);
+
       const pdfBuffer = await fetch("/template.pdf").then((res) =>
         res.arrayBuffer()
       );
@@ -42,7 +47,7 @@ export default function PdfDesigner() {
       let templateObj;
 
       if (savedTemplate) {
-        templateObj = JSON.parse(savedTemplate);
+        templateObj = savedTemplate;
         templateObj.basePdf = pdfBuffer;
       } else {
         templateObj = {
@@ -121,68 +126,39 @@ export default function PdfDesigner() {
     }
   };
 
-  //   const handleExport = async () => {
-  //     if (!designer.current) return;
-
-  //     console.log("designer ", designer);
-
-  //     try {
-  //       const currentTemplate = designer.current.getTemplate();
-  //       const currentInputs = getInputFromTemplate(currentTemplate);
-
-  //       const pdfBuffer = await generate({
-  //         template: currentTemplate,
-  //         inputs: currentInputs,
-  //         plugins: {
-  //           text,
-  //           image,
-  //           table,
-  //           date,
-  //           dateTime,
-  //           checkbox,
-  //           select,
-  //         },
-  //       });
-
-  //       const blob = new Blob([pdfBuffer], { type: "application/pdf" });
-  //       const url = URL.createObjectURL(blob);
-  //       const link = document.createElement("a");
-  //       link.href = url;
-  //       link.download = "generated_from_ui.pdf";
-  //       link.click();
-  //       URL.revokeObjectURL(url);
-  //     } catch (error) {
-  //       console.error("Error generating PDF:", error);
-  //       alert("Failed to export PDF. See console for details.");
-  //     }
-  //   };
-
   const handleExport = async () => {
     if (!designer.current) return;
 
+    console.log("designer ", designer);
+
     try {
-      const container = designer.current.domContainer.querySelector("canvas");
-      console.log("container", designer.current.domContainer);
+      const currentTemplate = designer.current.getTemplate();
+      const currentInputs = getInputFromTemplate(currentTemplate);
 
-      if (!container) {
-        alert("Designer container not found.");
-        return;
-      }
-
-      const canvas = await html2canvas(container, {
-        backgroundColor: "#ffffff", // optional
-        useCORS: true, // handles images from other origins
+      const pdfBuffer = await generate({
+        template: currentTemplate,
+        inputs: currentInputs,
+        plugins: {
+          text,
+          image,
+          table,
+          date,
+          dateTime,
+          checkbox,
+          select,
+        },
       });
 
-      const imgData = canvas.toDataURL("image/png");
-
+      const blob = new Blob([pdfBuffer], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.href = imgData;
-      link.download = "template_preview.png";
+      link.href = url;
+      link.download = "generated_from_ui.pdf";
       link.click();
+      URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Error exporting image:", error);
-      alert("Failed to export image. See console for details.");
+      console.error("Error generating PDF:", error);
+      alert("Failed to export PDF. See console for details.");
     }
   };
 
@@ -206,7 +182,7 @@ export default function PdfDesigner() {
           onClick={handleExport}
           className="border border-red-500 px-4 py-2 rounded"
         >
-          Export PDF
+          Export Image
         </button>
       </div>
     </div>
