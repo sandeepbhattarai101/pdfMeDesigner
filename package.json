@@ -13,6 +13,7 @@
     "@pdfme/generator": "^5.4.0",
     "@pdfme/schemas": "^5.4.0",
     "@pdfme/ui": "^5.4.0",
+    "html2canvas": "^1.4.1",
     "next": "15.3.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
