@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@pdfme/common": "^5.4.0",
+    "@pdfme/generator": "^5.4.0",
     "@pdfme/schemas": "^5.4.0",
     "@pdfme/ui": "^5.4.0",
     "next": "15.3.3",
